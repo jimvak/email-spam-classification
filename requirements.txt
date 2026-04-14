@@ -1,0 +1,5 @@
+pandas
+numpy
+gensim
+tensorflow
+scikit-learn
