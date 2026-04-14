@@ -23,8 +23,7 @@ output=mydata['label']
 
 email_split=[]
 
-#gia kathe email kane split kai dimiourgoume mia lista apo tis lekseis apo tis opoies
-#apoteleitai
+#for each email we do a split and we create a list of words
 for email in emails:
     email_split.append(str(email).split())
 
@@ -34,11 +33,11 @@ model = word2vec.Word2Vec(email_split, min_count=1)
 
 vectorized_emails=[]
 
-#gia kathe stoixeio tis listas email_split(poy einai mia lista leksewn)
+#for each element of the list email_split(which is a word list)
 for x in email_split:
-   #i lista me ta dyanismata gia kathe email 
+   #the list with the vectors for each email
     vector_email  = []
-    #gia kathe leksi tou emamil
+    #for each word of the email 
     for y in x:
       #prosthetoume to kodikopoihmeno dianisma(poy proekypse apo tin texniki word embedings) sto vector_email
         vector_email.append(model.wv[y])
