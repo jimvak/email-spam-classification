@@ -81,4 +81,4 @@ git clone https://github.com/jimvak/email-spam-classification.git
 cd email-spam-classification
 pip install -r requirements.txt
 python src/spam_word2vec_nn.py
-
+```
