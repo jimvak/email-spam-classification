@@ -13,103 +13,102 @@ from sklearn.metrics import f1_score
 
 
 
-#read of the csv file
+# Read the CSV file
 mydata = pd.read_csv('spam_or_not_spam.csv')
 
-#here we keep only the emails 
+# Keep only the emails
 emails= mydata['email']
 
 output=mydata['label']
 
 email_split=[]
 
-#for each email we do a split and we create a list of words
+# For each email, split it into a list of words
 for email in emails:
     email_split.append(str(email).split())
 
-#implementing word2vec model in order to transform the words into vectors 
+# Apply the Word2Vec model in order to transform words into vectors
 model = word2vec.Word2Vec(email_split, min_count=1)
 
 
 vectorized_emails=[]
 
-#for each element of the list email_split(which is a word list)
+# For each element of the email_split list (which is a list of words)
 for x in email_split:
-   #the list with the vectors for each email
+  # The list of vectors for each email
     vector_email  = []
-    #for each word of the email 
+   # For each word in the email
     for y in x:
-      #prosthetoume to kodikopoihmeno dianisma(poy proekypse apo tin texniki word embedings) sto vector_email
+      # Add the encoded vector of the word to vector_email
         vector_email.append(model.wv[y])
-    #prosthetoume stin megali lista, tin lista twn dianismatwn poy antistoixei sto email    
+    # Add to the main list the list of vectors corresponding to the email
     vectorized_emails.append(vector_email)
   
 final_emails=[]
 
 
 
-
-#prosthetoume ston final_emamils ton meso oro twn dianismatwn twn leksewn pou apoteloun to email
-#(epeidi kathe email apoteleitai apo polla dianismata, epeidi theloume na exoume telika ena dianisma 
-#ana email, pairnoume ton meso oro twn dianismatwn twn leksewn pou ton apoteloun
+# Add to final_emails the average of the vectors of the words that make up the email
+# Since each email consists of many vectors, and we want one final vector per email,
+# we take the average of the vectors of its words
 for x in vectorized_emails:
 
     final_emails.append(np.average(x, axis=0))
 
 
-#ginetai metasximatismos twn dedomenwn se katallili morfi etsi wste na mporoun na eisaxthoun
-#sto nevroniko diktyo
+# Transform the data into a suitable format so that it can be used
+# as input to the neural network
 
-#lista me tis eisidous
+# List of inputs
 final_input=[]
 
-#lista me tis eksodous 
+# List of outputs
 final_output=[]
 
-#gia kathe email(to opoio exei ypostei dianismatopoihsi)
+# For each email that has been vectorized
 for i in range(len(final_emails)):
-    #an den einai nAN
+    # If it is not NaN
     if not np.isnan(final_emails[i]).all():
-        #dimiourgoume mia prosoroni lista
+        # Create a temporary list
         temp_list=[]
-        #gia kathe dianisma pou einai mesa sto email
+        # For each value in the email vector
         for x in final_emails[i]:
-            #to prosthetoume stin prosorini lista
+             # Add it to the temporary list
             temp_list.append(x)
-        #prosthetoume tin prosorini lista stin teliki (gia tis eisodous)
+        # Add the temporary list to the final input list
         final_input.append(temp_list)
-        #prostetoume tin eksodo stin teliki lista (gia tis eksodous )
+        # Add the corresponding output label to the final output list
         final_output.append(output[i])
 
-#ara to final_input einai mia lista apo listes 
+# final_input is a list of lists
 
-#kai to final_output einai mia lista
+# final_output is a list
 
-#metatrepoume tin lista (me ta dedomena eisodou ) se 2d array etsi wste na mporesei na eisaxthei sto nevroniko diktyo
+# Convert the input data list into a 2D array so it can be fed into the neural network
 final_array = np.array(final_input)
 
-#metatrpoume tin lista (me ta dedomena eksodou) se 1d array etsi wste na mporei na eisaxthei sto nevroniko diktyo
+# Convert the output data list into a 1D array so it can be fed into the neural network
 final_output = np.array(final_output)
 
 X_train, X_test, y_train, y_test = train_test_split(final_array, final_output, test_size=0.25)
 
-#dimiourgia montelou tou nevronikou diktyou
+# Create the neural network model
 
-#dimiourgia tis topologias 
+# Define the topology
 
-#prosoxu : to input_dim prepei na einai 100
+# Note: input_dim must be 100
+
 model = Sequential()
 model.add(Dense(12, input_dim=100, activation='relu'))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-#edo ginetai i ekpaideysi tou nevronikou diktoty
 
+# Train the neural network
 model.fit(X_train, y_train, epochs=20, batch_size=100)
 
-#prediction apo to nevroniko diktyo
-
+# Prediction from the neural network
 y_pred=model.predict(X_test)
 
 
