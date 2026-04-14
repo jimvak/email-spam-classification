@@ -13,10 +13,10 @@ from sklearn.metrics import f1_score
 
 
 
-#diavasma tou csv
+#read of the csv file
 mydata = pd.read_csv('spam_or_not_spam.csv')
 
-#edo kratame mono ta emails
+#here we keep only the emails 
 emails= mydata['email']
 
 output=mydata['label']
@@ -28,7 +28,7 @@ email_split=[]
 for email in emails:
     email_split.append(str(email).split())
 
-#efarmogi tou montelou word2vec gia na metatrepsoume tis lekseis se dianismata
+#implementing word2vec model in order to transform the words into vectors 
 model = word2vec.Word2Vec(email_split, min_count=1)
 
 
