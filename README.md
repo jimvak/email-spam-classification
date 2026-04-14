@@ -74,7 +74,7 @@ email-spam-classification/
 ├── LICENSE
 ├── README.md
 └── requirements.txt
-
+```
 ## How to Run
 
 ```bash
